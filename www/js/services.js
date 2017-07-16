@@ -1,47 +1,47 @@
 angular.module('starter.services', [])
 
-.factory('Chats', function() {
-  // Might use a resource here that returns a JSON array
+.factory('Tasks', function($http) {
 
   // Some fake testing data
-  var chats = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'img/ben.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'img/max.png'
-  }, {
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'img/adam.jpg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'img/perry.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'img/mike.png'
-  }];
+  var tasks = [
+    {
+      id: 0,
+      name: 'Take out Trash',
+      description: 'I need to make sure I take out the trash before mom gets home'
+    },
+    {
+      id: 1,
+      name: 'Clean Dishes',
+      description: 'Also I need to clean the dishes before anyone gets home. Don\'t need any one to pile more on',
+    },
+    {
+      id: 2,
+      name: 'Feed Kitten',
+      description: 'Gotta feed mittens in like 5 minutes or else he will get a little cranky',
+    }
+  ];
 
   return {
     all: function() {
-      return chats;
+      return tasks;
     },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
+    create: function(newTask){
+      var order = {
+        id: tasks.length + 1,
+        name: newTask.taskName,
+        description: newTask.taskDes
+      };
+      tasks.push(order);
+      $http.post("http://localhost:8080/order", order)
+      return true;
     },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
+    remove: function(task) {
+      tasks.splice(tasks.indexOf(task), 1);
+    },
+    get: function(taskId) {
+      for (var i = 0; i < tasks.length; i++) {
+        if (tasks[i].id === parseInt(taskId)) {
+          return tasks[i];
         }
       }
       return null;

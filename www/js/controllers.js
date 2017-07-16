@@ -1,28 +1,50 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ["ionic.native"])
 
-.controller('DashCtrl', function($scope) {})
+.controller('DashCtrl', function($scope){
+  $scope.openBrowser = function(){
+  $cordovaInAppBrowser.create("https://www.google.com")
+}
 
-.controller('ChatsCtrl', function($scope, Chats) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  };
 })
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
+.controller('TasksCtrl', function($scope, Tasks, $ionicModal, $cordovaToast, $cordovaLocalNotifications, $cordovaInAppBrowser) {
+  $scope.tasks = Tasks.all();
+  $scope.remove = function(task) {
+    Tasks.remove(task);
+    $cordovaLocalNotifications.schedule({
+      id: 1,
+      text: 'Single ILocalNotification'
+    })
+  };
+
+
+
+  $ionicModal.fromTemplateUrl("templates/modal.html", {
+    scope: $scope,
+    animation: "slide-in-up"
+  }).then(function(modal){
+    $scope.modal = modal;
+  });
+
+
+
+
+
+  $scope.new = {
+    taskName: "",
+    taskDesc: ""
+  };
+    $scope.newTask = function(){
+        if(Tasks.create($scope.new)){
+          // $cordovaToast.show("Task Created", "short", "bottom");
+          $scope.modal.hide();
+        }
+    }
+
 })
 
-.controller('AccountCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
-});
+.controller('TaskDetailCtrl', function($scope, $stateParams, Tasks) {
+  $scope.task = Tasks.get($stateParams.taskId);
+})
+
+.controller('AccountCtrl', function($scope) {});
